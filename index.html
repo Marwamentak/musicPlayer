@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Player Design</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://kit.fontawesome.com/9490118a5e.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="music-player">
+      <nav>
+        <div class="circle">
+          <i class="fa-solid fa-angle-left"></i>
+        </div>
+
+        <div class="circle">
+          <i class="fa-solid fa-bars"></i>
+        </div>
+
+      </nav>
+      <img src="media/singer.png" class="song-img">
+
+      <h1>Despacito</h1>
+      <p>Luis Fonsi Ft. Puerto Rican</p>
+
+      <audio  id="song">
+        <source src="media/song.mp3" type="audio/mpeg">
+      </audio>
+
+      <input type="range" value="0" id="progress">
+
+      <div class="controls">
+        <div><i class="fa-solid fa-backward"></i></div>
+        <div onclick="playPause()"><i class="fa-solid fa-play" id="ctrlIcon"></i></div>
+        <div><i class="fa-solid fa-forward"></i></div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+    let progress = document.getElementById('progress');
+    let song = document.getElementById('song');
+    let ctrlIcon = document.getElementById('ctrlIcon');
+
+   // Lorsque les métadonnées d'un fichier audio (comme sa durée totale) sont entièrement chargées,
+    // cette fonction sera exécutée.
+    song.onloadedmetadata = function() {
+
+      // `song.duration` renvoie la durée totale du fichier audio en secondes.
+      // On définit la propriété `max` de l'élément `progress` (une barre de progression)
+      // avec la durée totale de la chanson. Cela fixe la valeur maximale que la barre
+      // de progression peut atteindre.
+      progress.max = song.duration;
+
+      // `song.currentTime` renvoie le temps actuel de lecture (en secondes) du fichier audio.
+      // On initialise la barre de progression (`progress.value`) à la position actuelle
+      // du fichier audio, qui est `0` au départ (au début de la lecture).
+      progress.value = song.currentTime;
+    }
+
+
+
+      // Fonction pour basculer entre lecture et pause
+    function playPause() {
+      // Vérifie si l'icône de contrôle (ctrlIcon) contient la classe "fa-pause"
+      if (ctrlIcon.classList.contains("fa-pause")) {
+          // Si oui, cela signifie que la musique est en lecture, donc on la met en pause
+          song.pause();
+          
+          // Change l'icône en "play" (lecture)
+          ctrlIcon.classList.remove("fa-pause");
+          ctrlIcon.classList.add("fa-play");
+      } else {
+          // Sinon, si l'icône n'est pas en pause (donc probablement en "play"), on démarre la lecture
+          song.play();
+          
+          // Change l'icône en "pause"
+          ctrlIcon.classList.add("fa-pause");
+          ctrlIcon.classList.remove("fa-play");
+      }
+    }
+
+    // Vérifie si la chanson est en train de jouer
+    if (song.play()) {
+      // Si la chanson est en lecture, démarre un intervalle
+      setInterval(() => {
+          // Met à jour la barre de progression (progress) en fonction du temps actuel de la chanson
+          progress.value = song.currentTime;
+      }, 500); // Met à jour toutes les 500ms (0,5 seconde)
+    }
+
+    // Événement déclenché lorsqu'on change manuellement la barre de progression
+    progress.onchange = function() {
+      // Reprend la lecture de la chanson si elle était en pause
+      song.play();
+      
+      // Met à jour le temps actuel de la chanson en fonction de la position de la barre de progression
+      song.currentTime = progress.value;
+      
+      // Change l'icône en "pause" pour indiquer que la musique est en lecture
+      ctrlIcon.classList.add("fa-pause");
+      ctrlIcon.classList.remove("fa-play");
+    };
+
+
+
+  </script>
+
+</body>
+</html>
